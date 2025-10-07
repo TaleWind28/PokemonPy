@@ -209,12 +209,12 @@ def interactive_calculate_coverage(squad):
             print(f'Alla tua squadra sono stati aggiunti i tipi: {initialize_squad()}, in quanto sono necessari per battere tipi con una sola debolezza')
             continue
         find_best_types(squad)
-        next_type = insertType(input('Inserisci il prossimo tipo'),squad)
+        next_type = insertType(input('Inserisci il prossimo tipo: '),squad)
         if next_type == 'exit': return squad 
         print(f'Tipo {next_type} aggiunto')
     
     if len(covered_types(squad))<18:print(f'Purtroppo la tua squadra non riesce a battere tutti i tipi')
-    else: print(f'La tua squadra {squad} batte tutti i tipi, utilizzando {math.ceil(len(squad)/2)}')
+    else: print(f'La tua squadra {squad} batte tutti i tipi, utilizzando {math.ceil(len(squad)/2)} slot')
     
     return squad
 
@@ -251,18 +251,20 @@ def user_init_squad(squad=[]):
     next_type = "init"
     while next_type != "exit":
         next_type = insertType(input("Inserisci il prossimo tipo: "),squad)
-        print(next_type)
     return squad
 
 
 # Script Effettivo
-print("Scegli i tipi iniziali dei pokemon che vuoi avere in squadra, oppure metti quelli che hai già; Appena hai finito premi invio per uscire")
+# print("Scegli i tipi iniziali dei pokemon che vuoi avere in squadra, oppure metti quelli che hai già; Appena hai finito premi invio per uscire")
 
-squad = user_init_squad();
+# squad = user_init_squad();
 
-print(f"La tua squadra ha attualmente questi tipi: {squad}");
+# print(f"La tua squadra ha attualmente questi tipi: {squad}");
 
-interactive_calculate_coverage(squad)
+# squad = interactive_calculate_coverage(squad)
+squad = calculate_coverage([],want_print=False);
+combs = calculate_combinations(squad)
 
-combs = calculate_combinations(calculate_coverage([],False))
 print(f'Hai a disposizione {len(combs)} combinazioni di tipi, che sono elencate di seguito')
+
+# pretty_print_combs(combs)
