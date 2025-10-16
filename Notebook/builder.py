@@ -167,7 +167,6 @@ def next_types_to_add(coverage):
             if pkmon_type != covered_type and updated[pkmon_type] == next_weight(updated)
     )
 
-# %%
 def find_best_types(squad,want_print = True ):
     #cerco i tipi richiesti
     requested_types = uncovered_types(squad);
@@ -287,25 +286,7 @@ def scrape_url(url):
         return 'blocked'
 # Example usage
 
-result = scrape_url(base_url + 'List_of_Pok%C3%A9mon_by_National_Pok%C3%A9dex_number')
 
-#se non ho potuto scrapare allora esco
-if result== 'blocked':
-    exit(0)
-
-soup = BeautifulSoup(result,'html.parser')
-
-table = soup.find_all('table',class_='roundy')
-
-first_gen = table[0]
-second_gen = table[1]
-third_gen = table[2]
-fourth_gen = table[3]
-fifth_gen = table[4]
-sixth_gen = table[5]
-seventh_gen = table[6]
-eight_gen = table[7]
-ninth_gen = table[8]
 
 translation_dict = {
     'Normal' : 'Normale',
@@ -321,7 +302,7 @@ translation_dict = {
     'Water' : 'Acqua',
     'Grass' : 'Erba',
     'Electric' : 'Elettro',
-    'Psychic' : 'Psichico',
+    'Psychic' : 'Psico',
     'Ice' : 'Ghiaccio',
     'Dragon' : 'Drago',
     'Dark' : 'Buio',
@@ -370,17 +351,6 @@ def convert_from_b4s_to_dataframe(b4s):
 
     return pd.DataFrame(data, columns=headers)
 
-first_gen_df = convert_from_b4s_to_dataframe(first_gen)
-second_gen_df = convert_from_b4s_to_dataframe(second_gen)
-third_gen_df = convert_from_b4s_to_dataframe(third_gen)
-fourth_gen_df = convert_from_b4s_to_dataframe(fourth_gen)
-fifth_gen_df = convert_from_b4s_to_dataframe(fifth_gen)
-sixth_gen_df = convert_from_b4s_to_dataframe(sixth_gen)
-seventh_gen_df = convert_from_b4s_to_dataframe(seventh_gen)
-eight_gen_df = convert_from_b4s_to_dataframe(eight_gen)
-ninth_gen_df = convert_from_b4s_to_dataframe(ninth_gen)
-
-generations = [first_gen_df,second_gen_df,third_gen_df,fourth_gen_df,fifth_gen_df,sixth_gen_df,seventh_gen_df,eight_gen_df,ninth_gen_df]
 
 def create_mask(clauses):
     mask = clauses[0]
@@ -507,6 +477,10 @@ def interactive_squad_building_step(pokemon,squad,coverage):
             else: 
                 continue
         choices.append(choice)
+    #modifico la copertura in base ai tipi già presenti
+    type_list = squad['First Type'].tolist()
+    type_list.append(squad['Second Type'].tolist())
+    coverage = calculate_coverage(type_list)
     
     
     #scelta randomica in base ai tipi possibili
@@ -540,7 +514,42 @@ def interactive_choose_your_pokemon(coverage):
     return squad
 
 
-coverage = calculate_coverage([],False)
+coverage = calculate_coverage(['Fuoco','Lotta'],False)
+
+print('Fetching Pokemon from Bulbapedia...')
+result = scrape_url(base_url + 'List_of_Pok%C3%A9mon_by_National_Pok%C3%A9dex_number')
+
+#se non ho potuto scrapare allora esco
+if result== 'blocked':
+    exit(0)
+
+soup = BeautifulSoup(result,'html.parser')
+
+table = soup.find_all('table',class_='roundy')
+
+first_gen = table[0]
+second_gen = table[1]
+third_gen = table[2]
+fourth_gen = table[3]
+fifth_gen = table[4]
+sixth_gen = table[5]
+seventh_gen = table[6]
+eight_gen = table[7]
+ninth_gen = table[8]
+
+first_gen_df = convert_from_b4s_to_dataframe(first_gen)
+second_gen_df = convert_from_b4s_to_dataframe(second_gen)
+third_gen_df = convert_from_b4s_to_dataframe(third_gen)
+fourth_gen_df = convert_from_b4s_to_dataframe(fourth_gen)
+fifth_gen_df = convert_from_b4s_to_dataframe(fifth_gen)
+sixth_gen_df = convert_from_b4s_to_dataframe(sixth_gen)
+seventh_gen_df = convert_from_b4s_to_dataframe(seventh_gen)
+eight_gen_df = convert_from_b4s_to_dataframe(eight_gen)
+ninth_gen_df = convert_from_b4s_to_dataframe(ninth_gen)
+
+generations = [first_gen_df,second_gen_df,third_gen_df,fourth_gen_df,fifth_gen_df,sixth_gen_df,seventh_gen_df,eight_gen_df,ninth_gen_df]
+
+
 squad = interactive_choose_your_pokemon(coverage)
 
 
